@@ -49,7 +49,7 @@
 --   Hint #2: Do NOT name one of your models/tables “cast” or “casts”; this 
 --   is a reserved word in sqlite and will break your database! Instead, 
 --   think of a better word to describe this concept; i.e. the relationship 
---   between an actor and the movie in which they play a part.
+--   between an actor and the movie in which they play a part. 
 -- 2. Execution of the domain model (CREATE TABLE) - 4 points
 -- - Follow best practices for table and column names
 -- - Use correct data column types (i.e. TEXT/INTEGER)
@@ -112,13 +112,81 @@
 
 -- Drop existing tables, so you'll start fresh each time this script is run.
 -- TODO!
-
+DROP TABLE IF EXISTS movies;
+DROP TABLE IF EXISTS studios;
+DROP TABLE IF EXISTS actors;
+DROP TABLE IF EXISTS roles;
 -- Create new tables, according to your domain model
 -- TODO!
+CREATE TABLE movies (
+    id INTEGER primary key AUTOINCREMENT,
+    title TEXT,
+    release_year INTEGER,
+    mpaa_rating TEXT,
+    studio_id INTEGER
+);
 
+CREATE TABLE studios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    studio_name TEXT
+);
+
+CREATE TABLE actors (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    actor_name TEXT
+);
+
+CREATE TABLE roles (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    movie_id INTEGER,
+    actor_id INTEGER,
+    movie_role TEXT
+); 
 -- Insert data into your database that reflects the sample data shown above
 -- Use hard-coded foreign key IDs when necessary
 -- TODO!
+
+INSERT INTO studios (studio_name)
+VALUES ("Warner Bros.");
+
+
+INSERT INTO movies (title, release_year, mpaa_rating, studio_id)
+VALUES 
+("Batman Begins","2005","PG-13",1),
+("The Dark Knight","2008","PG-13",1),
+("The Dark Knight Rises","2012","PG-13",1);
+
+INSERT INTO actors (actor_name)
+VALUES
+("Christian Bale"),
+("Michael Caine"),
+("Liam Neeson"),
+("Katie Holmes"),
+("Gary Oldman"),
+("Heath Ledger"),
+("Aaron Eckhart"),
+("Maggie Gyllenhaal"),
+("Tom Hardy"),
+("Anne Hathaway"),
+("Joseph Gordon-Levitt");
+
+INSERT INTO roles (movie_id, actor_id, movie_role)
+VALUES
+(1,1,"Bruce Wayne"),
+(1,2,"Alfred"),
+(1,3,"Ra's Al Ghul"),
+(1,4,"Rachel Dawes"),
+(1,5,"Commissioner Gordon"),
+(2,1,"Bruce Wayne"),
+(2,6,"Joker"),
+(2,7,"Harvey Dent"),
+(2,2,"Alfred"),
+(2,8,"Rachel Dawes"),
+(3,1,"Bruce Wayne"),
+(3,5,"Commissioner Gordon"),
+(3,9,"Bane"),
+(3, 11, "John Blake"),
+(3, 10, "Selina Kyle");
 
 -- Prints a header for the movies output
 .print "Movies"
@@ -127,6 +195,9 @@
 
 -- The SQL statement for the movies output
 -- TODO!
+SELECT movies.title, movies.release_year, movies.mpaa_rating, studios.studio_name
+FROM movies INNER JOIN studios ON movies.studio_id = studios.id; 
+
 
 -- Prints a header for the cast output
 .print ""
@@ -137,3 +208,7 @@
 
 -- The SQL statement for the cast output
 -- TODO!
+SELECT movies.title, actors.actor_name, roles.movie_role
+FROM roles
+INNER JOIN movies ON roles.movie_id = movies.id 
+INNER JOIN actors ON roles.actor_id = actors.id;
